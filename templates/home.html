@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% load static %}
+    <script src="{% static 'home.js' %}"></script>
+    <script>const homeUrl = "{% url 'home' %}";</script>
+    <style>
+        #message-box {
+            height: 200px;
+            width: 400px;
+            background-color: chocolate;
+        }
+
+        #connect {
+            padding: 10px;
+            background: cornflowerblue;
+        }</style>
+
+</head>
+<body>
+<div id="message-box">
+</div>
+<div>
+    <button id="connect" type="button" onclick="startConnection()">connect
+    </button>
+</div>
+
+</body>
+</html>
