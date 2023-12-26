@@ -1,0 +1,35 @@
+<div id="messages-parent" style="display: none">
+    <div id="meeting-details" style="width:720px; margin: 0 auto;">
+        <h1 id="meetingTitle"></h1>
+        <h3>Meeting id: <span id="meetingId"></span></h3>
+    </div>
+    <div id="messages-container" class="parent-container">
+        <!--
+        <div class="out-msg">Content for div1</div>
+        <div class="msg-section-brk"></div>
+        <div class="in-msg">Content for div2</div>
+        -->
+    </div>
+    <div style="width:720px; margin: 0 auto;">
+        <form onsubmit="return false;">
+            <label for="messageTxt">Message:
+                <input type="text" id="messageTxt" name="messageTxt" style="width: 480px; margin: 10px"/>
+            </label>
+            <button class="btn" type="button"
+                    onclick="sendMessage(this.form.messageTxt.value)">
+                Send message
+            </button>
+        </form>
+    </div>
+    <script>
+        const msgElement = document.getElementById('messageTxt');
+        // Add a keydown event listener to the input element
+        msgElement.addEventListener('keydown', function (event) {
+            // Check if the pressed key is Enter (keyCode 13)
+            if (event.key === 'Enter') {
+                // Call your JavaScript function here
+                sendMessage(msgElement.value);
+            }
+        });
+    </script>
+</div>

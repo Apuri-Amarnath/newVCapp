@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Meeting</title>
+    <link rel="stylesheet" href="/static/common.css"/>
+    <script src="/static/createMeeting.js"></script>
+    <script src="/static/meetingCommons.js"></script>
+    <script src="/static/utils.js"></script>
+</head>
+<body>
+<div id="start-meeting" class="parent-container">
+    <h1>Create New Meeting</h1>
+    <form onsubmit="return false;">
+
+        <div style="margin: 10px">
+            <div>
+                <label for="username">Username
+                    <input type="text" name="username"/>
+                </label>
+            </div>
+        </div>
+        <div style="margin: 10px">
+            <div>
+                <label for="meetingTitle">Meeting title
+                    <input type="text" name="meetingTitle"/>
+                </label>
+            </div>
+        </div>
+        <button class="btn" type="button"
+                onclick="createMeeting(this.form.username.value, this.form.meetingTitle.value, showMessagesContainer)">
+            Create Meeting
+        </button>
+    </form>
+</div>
+<div id="loading-meeting" style="display: none">
+    <h1>Meeting room <span id="spinnerMeetingId"></span> waiting for joiners...</h1>
+</div>
+{% include 'message-view.html' %}
+</body>
+</html>
