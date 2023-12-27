@@ -4,17 +4,24 @@ let textOnlyChannel;
 let meetingId;
 
 function joinMeeting(username, meetingId, afterJoining) {
-    peerConnection = new RTCPeerConnection();
+    // Calling the REST API TO fetch the TURN Server Credentials
+    const iceServers = synchronousGetRequest("https://gkrao.metered.live/api/v1/turn/credentials?apiKey=a1946aafe661154c29c723787e22a49176de");
+    // const iceServers = [{
+    //     "urls": "stun:stun.relay.metered.ca:80"
+    // }];
+    const configuration = {
+        iceServers: iceServers
+    };
+    peerConnection = new RTCPeerConnection(configuration);
     peerConnection.onicecandidate = ev => {
         if (peerConnection.iceGatheringState === "complete") {
             console.log("New ICE Candidate " + ev.candidate);
-            let answerData = JSON.stringify(peerConnection.localDescription);
-            console.log("offer value %s", answerData);
+            console.log("local offer value %s", JSON.stringify(peerConnection.localDescription));
             const answerPostRequest = {
                 "requestType": "takeMyAnswer",
                 "meetingId": meetingId,
                 "username": username,
-                "answerData": answerData
+                "answerData": peerConnection.localDescription
             }
             let meetingData = synchronousPostJsonObject(toSendAnswersUrl, answerPostRequest);
             window.meetingId = meetingId;
@@ -37,7 +44,7 @@ function joinMeeting(username, meetingId, afterJoining) {
     }
     const offerData = synchronousPostJsonObject(toSendAnswersUrl, offerRequest);
     peerConnection.setRemoteDescription(offerData.offer).then(onOffer => {
-        console.log("Remote offer is set to local connection!");
+        console.log("Remote offer is set %", JSON.stringify(offerData.offer));
     });
     peerConnection.createAnswer().then(answer => {
         console.log("Answer created for the remote connection!");

@@ -9,8 +9,8 @@ function pollClientAnswerAndStartMeeting(meetingId, afterReceivingAnswer) {
     }
     const answerResponse = synchronousPostJsonObject(toSendOfferUrl, answerRequest);
     if (answerResponse != null && answerResponse.answerData != null) {
-        serverPeerConnection.setRemoteDescription(JSON.parse(answerResponse.answerData)).then(value => {
-            console.log("Answer accepted")
+        serverPeerConnection.setRemoteDescription(answerResponse.answerData).then(value => {
+            console.log("Answer received %s", JSON.stringify(answerResponse.answerData));
             afterReceivingAnswer(answerResponse.meetingId, answerResponse.meetingTitle);
             hideLoadingMeeting();
         });
@@ -22,12 +22,20 @@ function pollClientAnswerAndStartMeeting(meetingId, afterReceivingAnswer) {
 }
 
 function createMeeting(userId, meetingTitle, afterCreatingMeeting) {
-    serverPeerConnection = new RTCPeerConnection();
+    // Calling the REST API TO fetch the TURN Server Credentials
+    // const iceServers = [{
+    //     "urls": "stun:stun.relay.metered.ca:80"
+    // }];
+    const iceServers = synchronousGetRequest("https://gkrao.metered.live/api/v1/turn/credentials?apiKey=a1946aafe661154c29c723787e22a49176de");
+    const configuration = {
+        iceServers: iceServers
+    };
+    serverPeerConnection = new RTCPeerConnection(configuration);
     textOnlyChannel = serverPeerConnection.createDataChannel("textOnlyChannel");
     serverPeerConnection.onicecandidate = ev => {
         if (serverPeerConnection.iceGatheringState === "complete") {
             let serverConnDesc = JSON.stringify(serverPeerConnection.localDescription);
-            console.log("ICE Candidate description: %s", serverConnDesc);
+            console.log("local offer is: %s", serverConnDesc);
             const requestObj = {
                 "requestType": "createNewMeeting",
                 "userId": userId,
@@ -62,10 +70,10 @@ function createMeeting(userId, meetingTitle, afterCreatingMeeting) {
 }
 
 function showLoadingMeeting(meetingId) {
-  document.getElementById('loading-meeting').style.display = 'block';
-  document.getElementById('spinnerMeetingId').textContent = meetingId;
+    document.getElementById('loading-meeting').style.display = 'block';
+    document.getElementById('spinnerMeetingId').textContent = meetingId;
 }
 
 function hideLoadingMeeting() {
-  document.getElementById('loading-meeting').style.display = 'none';
+    document.getElementById('loading-meeting').style.display = 'none';
 }

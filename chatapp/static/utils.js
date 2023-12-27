@@ -44,3 +44,27 @@ function synchronousPostJsonObject(url, data) {
         return null;
     }
 }
+
+function synchronousGetRequest(url) {
+    const xhr = new XMLHttpRequest();
+
+// Configure it as a synchronous request
+    xhr.open('GET', url, false);  // The third parameter 'false' makes it synchronous
+
+    try {
+        // Send the request
+        xhr.send();
+
+        // Check if the request was successful (status code 200)
+        if (xhr.status === 200) {
+            // Parse the response as JSON
+            const data = JSON.parse(xhr.responseText);
+            console.log('Synchronous JSON data:', data);
+            return data;
+        } else {
+            console.error(`HTTP error! Status: ${xhr.status}`);
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
